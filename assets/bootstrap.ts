@@ -1,5 +1,5 @@
-import { startStimulusApp, registerControllers } from "vite-plugin-symfony/dist/stimulus/helpers/index";
-import { registerReactControllerComponents, type ReactModule } from "vite-plugin-symfony/dist/stimulus/helpers/react/index"
+import { startStimulusApp, registerControllers } from "vite-plugin-symfony/dist/stimulus/helpers";
+import { registerReactControllerComponents, type ReactModule } from "vite-plugin-symfony/dist/stimulus/helpers/react";
 
 // register your React components before startStimulusApp
 registerReactControllerComponents(
