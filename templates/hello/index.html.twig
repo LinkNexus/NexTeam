@@ -3,7 +3,11 @@
 {% block title %}Hello HelloController!{% endblock %}
 
 {% block body %}
-    <div {{ react_component('Hello', {fullName: "Jason"}) }}>
+    {% set Form %}
+        {{ form(form) }}
+    {% endset %}
+
+    <div {{ react_component('Hello', {form: Form}) }}>
         Loading...
     </div>
 {% endblock %}
