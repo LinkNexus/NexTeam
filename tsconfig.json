@@ -111,5 +111,8 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "compileOnSave": true,
-  "include": ["assets/**/*"]
+  "include": [
+    "assets/**/*",
+    "assets/types/env.d.ts"
+  ]
 }
