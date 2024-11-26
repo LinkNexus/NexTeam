@@ -21,7 +21,11 @@ class HelloController extends AbstractController
                 'label' => 'Name',
             ])
             ->add('message', TextareaType::class)
-            ->add('terms', CheckboxType::class)
+            ->add('terms', CheckboxType::class, [
+                'attr' => [
+                    'onClick' => 'this.handleClick',
+                ]
+            ])
             ->add('submit', SubmitType::class)
             ->getForm();
 

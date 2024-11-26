@@ -1,0 +1,7 @@
+{% block text_widget %}
+    <div {{ react_component('Forms/Input', {
+        className: attr ? attr.class : null,
+        type: 'text'
+    }) }}>
+    </div>
+{% endblock %}
