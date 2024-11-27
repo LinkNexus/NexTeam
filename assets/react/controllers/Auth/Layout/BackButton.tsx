@@ -8,7 +8,7 @@ interface BackButtonProps {
 
 export default function ({ label, href }: BackButtonProps): ReactElement {
     return (
-        <Button variant='link' asChild>
+        <Button className='font-nornmal w-full' size='sm' variant='link' asChild>
             <a href={href}>
                 {label}
             </a>

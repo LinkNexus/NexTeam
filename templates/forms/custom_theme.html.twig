@@ -1,0 +1,34 @@
+{% block text_widget %}
+    <div {{ react_component('Forms/Themes/Input', {
+        type: 'text',
+        className: attr['class'] ?? '',
+        placeholder: attr['placeholder'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name
+    }) }}>
+    </div>
+
+    {{ dump() }}
+{% endblock %}
+
+{% block email_widget %}
+    <div {{ react_component('Forms/Themes/Input', {
+        type: 'email',
+        className: attr['class'] ?? '',
+        placeholder: attr['placeholder'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name
+    }) }}>
+    </div>
+{% endblock %}
+
+{% block textarea_widget %}
+    <div {{ react_component('Forms/Themes/Textarea', {
+        type: 'email',
+        className: attr['class'] ?? '',
+        placeholder: attr['placeholder'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name
+    }) }}>
+    </div>
+{% endblock %}
