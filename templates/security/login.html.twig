@@ -3,25 +3,13 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-    <form method="post">
-{#        {% if error %}#}
-{#            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>#}
-{#        {% endif %}#}
-
-{#        {% if app.user %}#}
-{#            <div class="mb-3">#}
-{#                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>#}
-{#            </div>#}
-{#        {% endif %}#}
-
-        <section class="w-full">
-            <div class="min-h-screen flex items-center justify-center" {{ react_component('Auth/Login', {
-                backButtonUrl: "/",
-                errorMsg: error ? error.messageKey|trans(error.messageData, 'security') : null,
-                csrfToken: csrf_token("authenticate"),
-                emailValue: last_username
-            }) }}>
-            </div>
-        </section>
-    </form>
+    <section class="w-full p-4">
+        <div class="min-h-screen flex items-center justify-center" {{ react_component('Auth/Login', {
+            backButtonUrl: "/",
+            errorMsg: error ? error.messageKey|trans(error.messageData, 'security') : null,
+            csrfToken: csrf_token("authenticate"),
+            emailValue: last_username
+        }) }}>
+        </div>
+    </section>
 {% endblock %}
