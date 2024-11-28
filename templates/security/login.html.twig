@@ -4,12 +4,16 @@
 
 {% block body %}
     <section class="w-full p-4">
-        <div class="min-h-screen flex items-center justify-center" {{ react_component('Auth/Login', {
-            backButtonUrl: "/",
-            errorMsg: error ? error.messageKey|trans(error.messageData, 'security') : null,
-            csrfToken: csrf_token("authenticate"),
-            emailValue: last_username
-        }) }}>
+        <div
+                class="min-h-screen flex items-center justify-center"
+
+                {{ react_component('Auth/Login', {
+                    backButtonUrl: "/",
+                    errorMsg: error ? error.messageKey|trans(error.messageData, 'security') : null,
+                    csrfToken: csrf_token("authenticate"),
+                    emailValue: last_username
+                }) }}
+        >
         </div>
     </section>
 {% endblock %}

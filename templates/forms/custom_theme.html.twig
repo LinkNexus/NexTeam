@@ -1,34 +1,67 @@
 {% block text_widget %}
-    <div {{ react_component('Forms/Themes/Input', {
+    <div {{ react_component('Themes/Input', {
         type: 'text',
         className: attr['class'] ?? '',
         placeholder: attr['placeholder'] ?? '',
         disabled: attr['disabled'] ?? false,
-        name: full_name
+        name: full_name,
+        required: required,
+        autoComplete: attr['autocomplete'] ?? null
     }) }}>
     </div>
 
-    {{ dump() }}
+{#    {{ dump() }}#}
 {% endblock %}
 
 {% block email_widget %}
-    <div {{ react_component('Forms/Themes/Input', {
+    <div {{ react_component('Themes/Input', {
         type: 'email',
         className: attr['class'] ?? '',
         placeholder: attr['placeholder'] ?? '',
         disabled: attr['disabled'] ?? false,
-        name: full_name
+        name: full_name,
+        required: required,
+        autoComplete: attr['autocomplete'] ?? null
     }) }}>
     </div>
 {% endblock %}
 
 {% block textarea_widget %}
-    <div {{ react_component('Forms/Themes/Textarea', {
+    <div {{ react_component('Themes/Textarea', {
         type: 'email',
         className: attr['class'] ?? '',
         placeholder: attr['placeholder'] ?? '',
         disabled: attr['disabled'] ?? false,
-        name: full_name
+        name: full_name,
+        required: required,
+        autoComplete: attr['autocomplete'] ?? null
     }) }}>
     </div>
+{% endblock %}
+
+{% block password_widget %}
+    <div {{ react_component('Themes/Input', {
+        type: 'password',
+        className: attr['class'] ?? '',
+        placeholder: attr['placeholder'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name,
+        required: required,
+        autoComplete: attr['autocomplete'] ?? null
+    }) }}>
+    </div>
+{% endblock %}
+
+{% block checkbox_widget %}
+    <div {{ react_component('Themes/Checkbox', {
+        className: attr['class'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name,
+        label: label,
+        required: required
+    }) }}>
+    </div>
+{% endblock %}
+
+{% block checkbox_label %}
 {% endblock %}

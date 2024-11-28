@@ -1,7 +1,7 @@
-import React, {ReactElement} from "react";
+import * as React from "react";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
-import AuthHeader from "@/react/controllers/Auth/Layout/AuthHeader";
-import BackButton from "@/react/controllers/Auth/Layout/BackButton";
+import AuthHeader from "@/react/components/Auth/AuthHeader";
+import BackButton from "@/react/components/Auth/BackButton";
 
 interface CardWrapperProps {
     label: string;
@@ -11,9 +11,9 @@ interface CardWrapperProps {
     children: React.ReactNode
 }
 
-export default function (props: CardWrapperProps): ReactElement {
+export default function (props: CardWrapperProps): React.ReactElement {
     return (
-        <Card className='w-[95%] md:w-[60%] lg:w-[40%] shadow-lg'>
+        <Card className='w-[95%] md:w-[60%] lg:w-[40%] xl:max-w-[550px] shadow-lg'>
             <CardHeader className='mb-5'>
                 <AuthHeader label={props.label} title={props.title} />
             </CardHeader>

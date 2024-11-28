@@ -2,12 +2,11 @@ import {ReactNode, RefAttributes, useId} from "react";
 import {Checkbox} from "@/components/ui/checkbox";
 import {CheckboxProps} from "@radix-ui/react-checkbox";
 
-interface Props extends Omit<CheckboxProps & RefAttributes<HTMLButtonElement>, "ref"> {
+export interface CustomCheckboxProps extends Omit<CheckboxProps & RefAttributes<HTMLButtonElement>, "ref"> {
     label: string;
-    children: ReactNode | null;
 }
 
-export default function ({ label, children, ...props}: Props) {
+export default function ({ label, children, ...props}: CustomCheckboxProps) {
     const id = useId();
 
     return (

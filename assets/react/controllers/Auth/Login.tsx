@@ -1,11 +1,11 @@
-import CardWrapper from "@/react/controllers/Auth/Layout/CardWrapper";
+import CardWrapper from "@/react/components/Auth/CardWrapper";
 import {Label} from "@/components/ui/label";
 import {Input} from "@/components/ui/input";
-import Checkbox from "@/react/controllers/Forms/Checkbox";
-import {Button} from "@/components/ui/button";
-import Divider from "@/react/controllers/Utils/Divider";
+import Checkbox from "@/react/components/Forms/Checkbox";
+import {Button, buttonVariants} from "@/components/ui/button";
+import Divider from "@/react/components/Utils/Divider";
 import {FaGoogle} from "react-icons/fa";
-import Alert from "@/react/controllers/Utils/Alert";
+import Alert from "@/react/components/Utils/Alert";
 import * as React from "react";
 
 interface AuthProps {
@@ -29,7 +29,8 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
             <form className='flex flex-col space-y-5' method='POST' action=''>
                 <div className='flex flex-col space-y-2'>
                     <Label htmlFor='username'>Email Address</Label>
-                    <Input required autoFocus placeholder='user@example.com' autoComplete='email' type='email' name='_username' id='username' value={lastUsername} />
+                    <Input required autoFocus placeholder='user@example.com' autoComplete='email' type='email'
+                           name='_username' id='username' value={lastUsername}/>
                 </div>
                 <div className='flex flex-col space-y-2'>
                     <div className='flex items-center justify-between'>
@@ -38,14 +39,15 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
                             Forgot password?
                         </a>
                     </div>
-                    <Input autoComplete='current-password' type='password' name='_password' id='password' />
+                    <Input className='placeholder:tracking-wider' placeholder='********' autoComplete='current-password'
+                           type='password' name='_password' id='password'/>
                 </div>
 
                 <Checkbox
                     label='Remember Me'
                     children={null}
                 />
-                <input type='hidden' name='_csrf_token' value={csrfToken} />
+                <input type='hidden' name='_csrf_token' value={csrfToken}/>
 
                 <Button className='w-full' type='submit'>
                     Sign In
@@ -54,10 +56,10 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
 
             <Divider>Or sign in with</Divider>
 
-            <Button className='w-full' variant='secondary'>
-                <FaGoogle />
+            <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
+                <FaGoogle/>
                 <span>Google</span>
-            </Button>
+            </a>
         </CardWrapper>
     )
 }

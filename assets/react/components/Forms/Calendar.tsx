@@ -1,7 +1,7 @@
 import {Calendar, CalendarProps} from "@/components/ui/calendar";
 import * as React from "react";
 
-export default function({ fromYear, toYear, className = '', ...props }: CalendarProps) {
+export default function({ fromYear, toYear, className = '', ...props }: CalendarProps): React.ReactElement {
     const [date, setDate] = React.useState<Date | undefined>(new Date());
     return (
         <Calendar
