@@ -6,7 +6,8 @@
         disabled: attr['disabled'] ?? false,
         name: full_name,
         required: required,
-        autoComplete: attr['autocomplete'] ?? null
+        autoComplete: attr['autocomplete'] ?? null,
+        id: id
     }) }}>
     </div>
 
@@ -21,7 +22,8 @@
         disabled: attr['disabled'] ?? false,
         name: full_name,
         required: required,
-        autoComplete: attr['autocomplete'] ?? null
+        autoComplete: attr['autocomplete'] ?? null,
+        id: id
     }) }}>
     </div>
 {% endblock %}
@@ -34,7 +36,8 @@
         disabled: attr['disabled'] ?? false,
         name: full_name,
         required: required,
-        autoComplete: attr['autocomplete'] ?? null
+        autoComplete: attr['autocomplete'] ?? '',
+        id: id
     }) }}>
     </div>
 {% endblock %}
@@ -47,7 +50,8 @@
         disabled: attr['disabled'] ?? false,
         name: full_name,
         required: required,
-        autoComplete: attr['autocomplete'] ?? null
+        autoComplete: attr['autocomplete'] ?? null,
+        id: id
     }) }}>
     </div>
 {% endblock %}
@@ -58,10 +62,32 @@
         disabled: attr['disabled'] ?? false,
         name: full_name,
         label: label,
-        required: required
+        required: required,
+        id: id
     }) }}>
     </div>
 {% endblock %}
 
 {% block checkbox_label %}
+{% endblock %}
+
+{% block submit_widget %}
+    <div {{ react_component('Themes/SubmitButton', {
+        className: attr['class'] ?? '',
+        disabled: attr['disabled'] ?? false,
+        name: full_name,
+        label: label,
+        type: 'submit',
+        id: id
+    }) }}>
+    </div>
+{% endblock %}
+
+{% block text_label %}
+    <div  {{ react_component('Themes/Label', {
+        htmlFor: id,
+        label: label,
+        className: attr['class'] ?? ''
+    }) }}>
+    </div>
 {% endblock %}

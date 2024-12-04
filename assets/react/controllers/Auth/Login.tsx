@@ -7,15 +7,18 @@ import Divider from "@/react/components/Utils/Divider";
 import {FaGoogle} from "react-icons/fa";
 import Alert from "@/react/components/Utils/Alert";
 import * as React from "react";
+import {GitHubLogoIcon} from "@radix-ui/react-icons";
 
 interface AuthProps {
     backButtonUrl: string;
     errorMsg: string | null;
     csrfToken: string;
     lastUsername: string;
+    successMessages: string[];
+    forgotPasswordUrl: string;
 }
 
-export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: AuthProps): React.ReactElement {
+export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername, successMessages, forgotPasswordUrl }: AuthProps): React.ReactElement {
     return (
         <CardWrapper
             label="Log in to your Account"
@@ -26,6 +29,10 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
 
             {errorMsg && <Alert type='error' className='mb-5'>{errorMsg}</Alert>}
 
+            {successMessages.map((message: string, id: number): React.ReactElement => (
+                <Alert key={id} type='info' className='mb-5'>{message}</Alert>
+            ))}
+
             <form className='flex flex-col space-y-5' method='POST' action=''>
                 <div className='flex flex-col space-y-2'>
                     <Label htmlFor='username'>Email Address</Label>
@@ -35,7 +42,7 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
                 <div className='flex flex-col space-y-2'>
                     <div className='flex items-center justify-between'>
                         <Label className='h-fit' htmlFor='password'>Password</Label>
-                        <a className='h-fit text-sm hover:underline underline-offset-4' href='/'>
+                        <a className='h-fit text-sm hover:underline underline-offset-4' href={forgotPasswordUrl}>
                             Forgot password?
                         </a>
                     </div>
@@ -56,10 +63,17 @@ export default function ({ backButtonUrl, errorMsg, csrfToken, lastUsername }: A
 
             <Divider>Or sign in with</Divider>
 
-            <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
-                <FaGoogle/>
-                <span>Google</span>
-            </a>
+            <div className='flex space-x-2'>
+                <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
+                    <FaGoogle/>
+                    <span>Google</span>
+                </a>
+                <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
+                    <GitHubLogoIcon />
+                    <span>Github</span>
+                </a>
+            </div>
+
         </CardWrapper>
     )
 }

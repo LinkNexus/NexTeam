@@ -3,21 +3,16 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    {% for flash_error in app.flashes('verify_email_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
-    {% endfor %}
+    <section class="w-full p-4">
+        <div
+                class="min-h-screen flex items-center justify-center"
 
-    <h1>Register</h1>
-
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+                {{ react_component('Auth/Register', {
+                    backButtonUrl:  path('app_login'),
+                    verifyEmailErrors: app.flashes('verify_email_error'),
+                    csrfToken: csrf_token("create-account"),
+                }) }}
+        >
+        </div>
+    </section>
 {% endblock %}

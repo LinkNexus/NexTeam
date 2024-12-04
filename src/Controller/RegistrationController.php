@@ -6,14 +6,17 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
@@ -29,6 +32,7 @@ class RegistrationController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string $plainPassword */
@@ -55,8 +59,87 @@ class RegistrationController extends AbstractController
         }
 
         return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form,
+            'form' => $form,
         ]);
+    }
+
+    #[Route(path: '/create-account', name: 'app_create_account', methods: ['POST'])]
+    public function createAccount(
+        Request $request,
+        UserPasswordHasherInterface $userPasswordHasher,
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent());
+        $user = new User();
+
+        // Set the data in the user object
+        $user->setEmail($data->email);
+        $user->setPassword($userPasswordHasher->hashPassword($user, $data->password));
+        $user->setName($data->name);
+        $user->setBornAt(new \DateTimeImmutable($data->dateOfBirth));
+        $user->setGender($data->gender);
+
+        $errors = $validator->validate($user);
+        $errorsList = [];
+
+        if (!$this->isCsrfTokenValid('create-account', $data->csrfToken)) {
+            return new JsonResponse([
+                'errors' => ['Invalid CSRF token. Please try to resubmit the form.']
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (count($errors) > 0) {
+            foreach ($errors as $error) {
+                $errorsList[] = $error->getMessage();
+            }
+
+            return new JsonResponse([
+                'errors' => $errorsList,
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $user->setAuthToken($token);
+
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        // generate a signed url and email it to the user
+        $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+            (new TemplatedEmail())
+                ->from(new Address('contact@nexteam.dev', 'Contact - NexTeam'))
+                ->to((string) $user->getEmail())
+                ->subject('Please Confirm your Email')
+                ->htmlTemplate('registration/confirmation_email.html.twig')
+        );
+
+        return new JsonResponse([
+            'id' => $user->getId(),
+            'token' => $token,
+        ], 200);
+    }
+
+    #[Route(path: '/register/authenticate/{id}/{token}', name: 'app_register_authenticate')]
+    public function authenticate(
+        #[MapEntity(mapping: ['id' => 'id'])]
+        ?User $user,
+        string $token,
+        Security $security,
+        EntityManagerInterface $entityManager
+    ): Response
+    {
+        if (!$user)
+            return $this->redirectToRoute('app_login');
+
+        if ($user->getAuthToken() !== $token)
+            return $this->redirectToRoute('app_login');
+
+        $user->setAuthToken(null);
+        $entityManager->flush();
+        $this->addFlash('info', 'Your account has been successfully created!');
+        return $security->login($user, 'form_login', 'main');
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
