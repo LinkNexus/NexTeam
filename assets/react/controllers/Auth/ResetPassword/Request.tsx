@@ -24,10 +24,12 @@ export default function ({ backButtonUrl, csrfToken, errors, resetMessage }: Req
             ))}
 
             {resetMessage && (
-                <Alert type='info' className='mb-5' dangerouslySetInnerHTML={{__html: resetMessage}}></Alert>
+                <Alert type='info' className='mb-5'>
+                    <div dangerouslySetInnerHTML={{__html: resetMessage}}></div>
+                </Alert>
             )}
 
-            <form name='reset_password_request_form' method='POST' className='flex flex-col space-y-5'>
+            <form action='/reset-password' name='reset_password_request_form' method='POST' className='flex flex-col space-y-5'>
                 <div className='flex flex-col space-y-2'>
                     <Label htmlFor='reset_password_request_email'>Email Address</Label>
                     <Input required autoFocus placeholder='user@example.com' autoComplete='email' type='email'
