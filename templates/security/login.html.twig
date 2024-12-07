@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{#{% block google_sign_in %}#}
+
+{#{% endblock %}#}
+
+{#{% block javascripts %}#}
+{#    {{ parent }}#}
+{#    <script src="https://apis.google.com/js/platform.js" async defer></script>#}
+{#{% endblock %}#}
+
+{% block body %}
+    <section class="w-full p-4">
+        <div
+                class="min-h-screen flex items-center justify-center"
+
+                {{ react_component('Auth/Login', {
+                    backButtonUrl:  path('app_register'),
+                    errorMsg: error ? error.messageKey|trans(error.messageData, 'security') : null,
+                    csrfToken: csrf_token("authenticate"),
+                    emailValue: last_username,
+                    successMessages: app.flashes('info'),
+                    forgotPasswordUrl: path('app_forgot_password_request')
+                }) }}
+        >
+        </div>
+    </section>
+{% endblock %}
