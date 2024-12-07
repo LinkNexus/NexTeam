@@ -3,10 +3,22 @@
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
-    <h1>Reset your password</h1>
+{#    <h1>ResetPassword your password</h1>#}
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+{#    {{ form_start(resetForm) }}#}
+{#        {{ form_row(resetForm.plainPassword) }}#}
+{#        <button class="btn btn-primary">ResetPassword password</button>#}
+{#    {{ form_end(resetForm) }}#}
+
+    <section class="w-full p-4">
+        <div
+                class="min-h-screen flex items-center justify-center"
+
+                {{ react_component('Auth/ResetPassword/Reset', {
+                    backButtonUrl:  path('app_login'),
+                    csrfToken: csrf_token("reset-password"),
+                }) }}
+        >
+        </div>
+    </section>
 {% endblock %}

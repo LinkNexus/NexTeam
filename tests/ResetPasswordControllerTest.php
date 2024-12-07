@@ -49,7 +49,7 @@ class ResetPasswordControllerTest extends WebTestCase
         $this->client->request('GET', '/reset-password');
 
         self::assertResponseIsSuccessful();
-        self::assertPageTitleContains('Reset your password');
+        self::assertPageTitleContains('ResetPassword your password');
 
         // Submit the reset password form and test email message is queued / sent
         $this->client->submitForm('Send password reset email', [
@@ -72,7 +72,7 @@ class ResetPasswordControllerTest extends WebTestCase
         // Test check email landing page shows correct "expires at" time
         $crawler = $this->client->followRedirect();
 
-        self::assertPageTitleContains('Password Reset Email Sent');
+        self::assertPageTitleContains('Password ResetPassword Email Sent');
         self::assertStringContainsString('This link will expire in 1 hour', $crawler->html());
 
         // Test the link sent in the email is valid
@@ -86,7 +86,7 @@ class ResetPasswordControllerTest extends WebTestCase
         $this->client->followRedirect();
 
         // Test we can set a new password
-        $this->client->submitForm('Reset password', [
+        $this->client->submitForm('ResetPassword password', [
             'change_password_form[plainPassword][first]' => 'newStrongPassword',
             'change_password_form[plainPassword][second]' => 'newStrongPassword',
         ]);

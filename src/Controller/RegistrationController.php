@@ -19,6 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
+use function PHPUnit\Framework\isEmpty;
 
 class RegistrationController extends AbstractController
 {
@@ -29,38 +30,36 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
-        $form = $this->createForm(RegistrationFormType::class, $user);
-        $form->handleRequest($request);
+//        $user = new User();
+//        $form = $this->createForm(RegistrationFormType::class, $user);
+//        $form->handleRequest($request);
+//
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            /** @var string $plainPassword */
+//            $plainPassword = $form->get('plainPassword')->getData();
+//
+//            // encode the plain password
+//            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
+//
+//            $entityManager->persist($user);
+//            $entityManager->flush();
+//
+//            // generate a signed url and email it to the user
+//            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
+//                (new TemplatedEmail())
+//                    ->from(new Address('contact@nexteam.dev', 'Contact - NexTeam'))
+//                    ->to((string) $user->getEmail())
+//                    ->subject('Please Confirm your Email')
+//                    ->htmlTemplate('registration/confirmation_email.html.twig')
+//            );
+//
+//            // do anything else you need here, like send an email
+//
+//            return $security->login($user, 'form_login', 'main');
+//        }
 
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
-
-            // encode the plain password
-            $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
-            $entityManager->persist($user);
-            $entityManager->flush();
-
-            // generate a signed url and email it to the user
-            $this->emailVerifier->sendEmailConfirmation('app_verify_email', $user,
-                (new TemplatedEmail())
-                    ->from(new Address('contact@nexteam.dev', 'Contact - NexTeam'))
-                    ->to((string) $user->getEmail())
-                    ->subject('Please Confirm your Email')
-                    ->htmlTemplate('registration/confirmation_email.html.twig')
-            );
-
-            // do anything else you need here, like send an email
-
-            return $security->login($user, 'form_login', 'main');
-        }
-
-        return $this->render('registration/register.html.twig', [
-            'form' => $form,
-        ]);
+        return $this->render('registration/register.html.twig');
     }
 
     #[Route(path: '/create-account', name: 'app_create_account', methods: ['POST'])]
@@ -71,7 +70,25 @@ class RegistrationController extends AbstractController
         ValidatorInterface $validator
     ): JsonResponse
     {
+        $errorsList = [];
         $data = json_decode($request->getContent());
+
+        // Validating the user's password. Since it cannot be directly be set to the
+        // user entity, i set it firstly on a DTO then validate it using Symfony Assertions
+        $userData = new \App\DTO\User();
+        $userData->password = $data->password;
+        $passwordErrors = $validator->validate($userData);
+
+        if ($passwordErrors->count() > 0) {
+            foreach ($passwordErrors as $passwordError) {
+                $errorsList[] = $passwordError->getMessage();
+            }
+        }
+
+        if ($data->password !== $userData->password) {
+            $errorsList[] = "Passwords do not match";
+        }
+
         $user = new User();
 
         // Set the data in the user object
@@ -82,7 +99,6 @@ class RegistrationController extends AbstractController
         $user->setGender($data->gender);
 
         $errors = $validator->validate($user);
-        $errorsList = [];
 
         if (!$this->isCsrfTokenValid('create-account', $data->csrfToken)) {
             return new JsonResponse([
@@ -90,11 +106,13 @@ class RegistrationController extends AbstractController
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        if (count($errors) > 0) {
+        if ($errors->count() > 0) {
             foreach ($errors as $error) {
                 $errorsList[] = $error->getMessage();
             }
+        }
 
+        if (!empty($errorsList)) {
             return new JsonResponse([
                 'errors' => $errorsList,
             ], Response::HTTP_UNPROCESSABLE_ENTITY);

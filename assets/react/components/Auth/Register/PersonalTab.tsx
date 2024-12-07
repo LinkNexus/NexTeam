@@ -81,7 +81,7 @@ export default function ({ form }: { form: UseFormReturn<any, any, undefined> })
                                     <Calendar
                                         selected={field.value}
                                         onSelect={field.onChange}
-                                        disabled={(date) => date > new Date(DateTime.now().minus({years: 17}).toString()) || date < new Date("1900-01-01")}
+                                        // disabled={(date) => date > new Date(DateTime.now().minus({years: 17}).toString()) || date < new Date("1900-01-01")}
                                         initialFocus
                                         defaultMonth={new Date(DateTime.now().minus({years: 17}).toString())}
                                         pagedNavigation={true}

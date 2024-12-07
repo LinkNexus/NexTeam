@@ -35,13 +35,9 @@ export default function (props: RegisterProps) {
     const form = useForm<z.infer<typeof RegistrationSchema>>({
         resolver: zodResolver(RegistrationSchema),
         defaultValues: {
-            email: "",
-            name: "",
             password: "",
             confirmPassword: "",
-            dateOfBirth: undefined,
             termsAndConditions: false,
-            gender: undefined,
             csrfToken: props.csrfToken,
         }
     })

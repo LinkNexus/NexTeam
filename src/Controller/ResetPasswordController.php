@@ -8,6 +8,7 @@ use App\Form\ResetPasswordRequestFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,6 +16,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -55,7 +57,7 @@ final class ResetPasswordController extends AbstractController
 
             return $this->render('reset_password/request.html.twig', [
                 'errors' => $errorsList,
-                'resetToken' => null
+                'resetToken' => null,
             ]);
         }
 
@@ -77,21 +79,17 @@ final class ResetPasswordController extends AbstractController
             $resetToken = $this->resetPasswordHelper->generateFakeResetToken();
         }
 
-        return $this->redirectToRoute('app_forgot_password_request', [
+        return $this->render('reset_password/request.html.twig', [
             'errors' => [],
             'resetToken' => $resetToken,
         ]);
-
-//        return $this->render('reset_password/check_email.html.twig', [
-//            'resetToken' => $resetToken,
-//        ]);
     }
 
     /**
      * Validates and process the reset URL that the user clicked in their email.
      */
     #[Route('/reset/{token}', name: 'app_reset_password')]
-    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ?string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, TranslatorInterface $translator, ValidatorInterface $validator, ?string $token = null): Response
     {
         if ($token) {
             // We store the token in session and remove it from the URL, to avoid the URL being
@@ -121,29 +119,54 @@ final class ResetPasswordController extends AbstractController
         }
 
         // The token is valid; allow the user to change their password.
-        $form = $this->createForm(ChangePasswordFormType::class);
-        $form->handleRequest($request);
+        if ($request->getMethod() === 'POST' && $request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
+            $errorsList = [];
+            $data = json_decode($request->getContent());
 
-        if ($form->isSubmitted() && $form->isValid()) {
+            if (!$this->isCsrfTokenValid('reset-password', $data->csrfToken)) {
+                return new JsonResponse([
+                    'errors' => ['Invalid CSRF token. Please try to resubmit the form.']
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
+            $userData = new \App\DTO\User();
+            $userData->password = $data->password;
+            $errors = $validator->validate($userData);
+
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $errorsList[] = $error->getMessage();
+                }
+            }
+
+            if ($data->password !== $userData->password) {
+                $errorsList[] = "Passwords do not match";
+            }
+
+            if (!empty($errorsList)) {
+                return new JsonResponse([
+                    'errors' => $errorsList,
+                ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+
             // A password reset token should be used only once, remove it.
             $this->resetPasswordHelper->removeResetRequest($token);
 
-            /** @var string $plainPassword */
-            $plainPassword = $form->get('plainPassword')->getData();
-
             // Encode(hash) the plain password, and set it.
-            $user->setPassword($passwordHasher->hashPassword($user, $plainPassword));
+            $user->setPassword($passwordHasher->hashPassword($user, $data->password));
             $this->entityManager->flush();
 
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            return $this->redirectToRoute('app_home');
+            $this->addFlash('info', 'Your password has been successfully modified');
+
+            return new JsonResponse([
+                'errors' => null
+            ], 200);
         }
 
-        return $this->render('reset_password/reset.html.twig', [
-            'resetForm' => $form,
-        ]);
+        return $this->render('reset_password/reset.html.twig');
     }
 
     private function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer, TranslatorInterface $translator): RedirectResponse

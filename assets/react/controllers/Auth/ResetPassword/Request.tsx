@@ -10,8 +10,9 @@ interface RequestProps {
     csrfToken: string;
     errors: string[];
     resetMessage: string | null;
+    resetPasswordErrors: string[];
 }
-export default function ({ backButtonUrl, csrfToken, errors, resetMessage }: RequestProps): React.ReactElement {
+export default function ({ backButtonUrl, csrfToken, errors, resetMessage, resetPasswordErrors }: RequestProps): React.ReactElement {
     return (
         <CardWrapper
             label='Reset your password'
@@ -20,6 +21,10 @@ export default function ({ backButtonUrl, csrfToken, errors, resetMessage }: Req
             backButtonLabel='Login to your account'
         >
             {errors.map((message: string, id: number): React.ReactElement => (
+                <Alert key={id} type='error' className='mb-5'>{message}</Alert>
+            ))}
+
+            {resetPasswordErrors.map((message: string, id: number): React.ReactElement => (
                 <Alert key={id} type='error' className='mb-5'>{message}</Alert>
             ))}
 
