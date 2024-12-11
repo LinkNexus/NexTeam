@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -61,6 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $authToken = null;
+
+    #[ORM\Column(type: 'ulid')]
+    private ?Ulid $identifier = null;
 
     public function getId(): ?int
     {
@@ -193,6 +197,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAuthToken(?string $authToken): static
     {
         $this->authToken = $authToken;
+
+        return $this;
+    }
+
+    public function getIdentifier(): ?Ulid
+    {
+        return $this->identifier;
+    }
+
+    public function setIdentifier(Ulid $identifier): static
+    {
+        $this->identifier = $identifier;
 
         return $this;
     }

@@ -117,11 +117,11 @@ export default function (props: RegisterProps) {
                 <Divider>Or sign up with</Divider>
 
                 <div className='flex space-x-2'>
-                    <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
+                    <a href='#' className={buttonVariants({variant: "outline"}) + " w-full"}>
                         <FaGoogle/>
                         <span>Google</span>
                     </a>
-                    <a href='#' className={buttonVariants({variant: "secondary"}) + " w-full"}>
+                    <a href='#' className={buttonVariants({variant: "outline"}) + " w-full"}>
                         <GitHubLogoIcon/>
                         <span>Github</span>
                     </a>

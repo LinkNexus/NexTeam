@@ -40,11 +40,17 @@ export default function ({ teams }: { teams: Team[] }): React.ReactElement {
                         <DropdownMenuLabel>Teams</DropdownMenuLabel>
 
                         {teams.map((team: Team, index: number) => (
-                            <div className="flex size-6 items-center justify-center rounded-sm border">
-                                <team.logo className="size-4 shrink-0"/>
+                            <DropdownMenuItem
+                                key={team.name}
+                                onClick={() => setActiveTeam(team)}
+                                className="gap-2 p-2"
+                            >
+                                <div className="flex size-6 items-center justify-center rounded-sm border">
+                                    <team.logo className="size-4 shrink-0"/>
+                                </div>
                                 {team.name}
                                 <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
-                            </div>
+                            </DropdownMenuItem>
                         ))}
 
                         <DropdownMenuSeparator />

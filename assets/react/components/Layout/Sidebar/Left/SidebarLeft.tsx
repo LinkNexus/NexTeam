@@ -12,11 +12,11 @@ import {
     AudioWaveform
 } from 'lucide-react';
 import {Sidebar, SidebarContent, SidebarHeader, SidebarRail} from "@/components/ui/sidebar";
-import TeamSwitcher from "@/react/components/Layout/Sidebar/TeamSwitcher";
-import NavMain from "@/react/components/Layout/Sidebar/NavMain";
-import NavFavorites from "@/react/components/Layout/Sidebar/NavFavorites";
-import NavWorkspaces from "@/react/components/Layout/Sidebar/NavWorkspaces";
-import NavSecondary from "@/react/components/Layout/Sidebar/NavSecondary";
+import TeamSwitcher from "@/react/components/Layout/Sidebar/Left/TeamSwitcher";
+import NavMain from "@/react/components/Layout/Sidebar/Left/NavMain";
+import NavFavorites from "@/react/components/Layout/Sidebar/Left/NavFavorites";
+import NavWorkspaces from "@/react/components/Layout/Sidebar/Left/NavWorkspaces";
+import NavSecondary from "@/react/components/Layout/Sidebar/Left/NavSecondary";
 
 export default function ({ ...props }: React.ComponentProps<typeof Sidebar>): React.ReactElement {
     const data = {

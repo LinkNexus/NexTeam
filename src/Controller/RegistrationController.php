@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Uid\Factory\UlidFactory;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -67,10 +68,21 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
+        ValidatorInterface $validator,
+        UlidFactory $ulidFactory
     ): JsonResponse
     {
         $errorsList = [];
+        /** @var object{
+         *     email: string,
+         *     name: string,
+         *     password: string,
+         *     confirmPassword: string,
+         *     dateOfBirth: string,
+         *     gender: string,
+         *     csrfToken: string
+         * } $data
+         */
         $data = json_decode($request->getContent());
 
         // Validating the user's password. Since it cannot be directly be set to the
@@ -97,6 +109,7 @@ class RegistrationController extends AbstractController
         $user->setName($data->name);
         $user->setBornAt(new \DateTimeImmutable($data->dateOfBirth));
         $user->setGender($data->gender);
+        $user->setIdentifier($ulidFactory->create());
 
         $errors = $validator->validate($user);
 

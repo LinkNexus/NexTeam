@@ -121,6 +121,11 @@ final class ResetPasswordController extends AbstractController
         // The token is valid; allow the user to change their password.
         if ($request->getMethod() === 'POST' && $request->headers->get('X-Requested-With') === 'XMLHttpRequest') {
             $errorsList = [];
+            /** @var object{
+             *     password: string,
+             *     confirmPassword: string
+             * } $data
+             */
             $data = json_decode($request->getContent());
 
             if (!$this->isCsrfTokenValid('reset-password', $data->csrfToken)) {
@@ -139,7 +144,7 @@ final class ResetPasswordController extends AbstractController
                 }
             }
 
-            if ($data->password !== $userData->password) {
+            if ($data->password !== $data->confirmPassword) {
                 $errorsList[] = "Passwords do not match";
             }
 

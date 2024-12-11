@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello MainController!{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen flex items-center justify-center" {{ react_component('Main/Index') }}>
+        <twig:Spinner />
+    </div>
+{% endblock %}
